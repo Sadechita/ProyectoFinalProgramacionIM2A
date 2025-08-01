@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EL RINCÓN DEL CAFÉ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="ElRincon-del-Cafe.css">
+
+    </head>
+<body>
+    <header>
+        <h1>el Rincón del Café </h1>
+        <p>Compra con descuentos inteligentes y recomendaciones personalizadas</p>
+        <div class="auth-buttons" id="authButtons">
+            <button onclick="openRegisterModal()">Registrarse</button>
+            <button onclick="openLoginModal()">Iniciar Sesión</button>
+        </div>
+        <div class="user-info" id="userInfo" style="display: none;">
+            <span>Hola, <span id="currentUserName"></span>!</span>
+            <button id="adminPanelBtn" onclick="openAdminModal()" style="display: none;">Panel Admin</button>
+            <button onclick="logout()">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <div class="banner">
+        <div class="banner-content">
+            <h2>Bienvenido a tu Tienda favorita el Rincón del Café</h2>
+            <p>¡Disfruta de una experiencia de compra única y el café perfecto para ti! Despierta tus sentidos con cada sorbo en el Rincon del Cafe. Aquí, cada grano cuenta una historia de pasión y dedicación, transformándose en una experiencia que va más allá de una simple taza. Permítete una pausa, respira el aroma y deja que el café te invite a disfrutar de los pequeños grandes momentos de la vida.</p>
+        </div>
+    </div>
+
+    <div class="coffee-test-banner">
+        <div class="coffee-test-content">
+            <h2>¿No sabes qué café elegir?</h2>
+            <p>¡Prueba nuestro test del café para encontrar tus preferencias y descubrir tu compañero perfecto!</p>
+            <button onclick="openCoffeeTestModal()">Hacer el Test del Café <i class="fas fa-mug-hot"></i></button>
+        </div>
+    </div>
+
+    <div class="contenedor" id="productos"></div>
+
+    <button class="carrito-btn" onclick="abrirCarritoModal()"><i class="fas fa-shopping-cart"></i> Ver Carrito</button>
+
+    <div class="modal" id="purchaseConfigModal">
+        <div class="modal-content">
+            <div class="modal-image-container">
+                <img id="modal-product-image" src="" alt="Imagen del producto">
+            </div>
+            <div class="modal-info-content">
+                <h3 id="titulo-modal"></h3>
+                <p id="descripcion-modal"></p>
+                <label for="presentacion">Presentación:</label>
+                <select id="presentacion">
+                    <option value="250">250g</option>
+                    <option value="500">500g</option>
+                    <option value="1000">1kg</option>
+                    <option value="3000">3kg</option>
+                </select>
+                <label for="cantidad">Cantidad (unidades):</label>
+                <input type="number" id="cantidad" min="1" value="1">
+                <label for="tueste">Tueste:</label>
+                <select id="tueste">
+                    <option value="medio">Medio</option>
+                    <option value="oscuro">Oscuro</option>
+                </select>
+                <div id="recomendacion"></div>
+                <p id="descuento-aplicado" class="descuento-info"></p>
+                <button onclick="agregarAlCarrito()">Agregar al carrito <i class="fas fa-cart-plus"></i></button>
+                <button class="close-button" onclick="cerrarModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="carrito-modal" id="carritoModal">
+        <div class="carrito-content">
+            <h3>Carrito de Compras <i class="fas fa-shopping-cart"></i></h3>
+            <table class="carrito-table" id="carrito-items">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Presentación</th>
+                        <th>Tueste</th>
+                        <th>Precio Original</th>
+                        <th>Descuento Aplicado</th>
+                        <th>Precio Final</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="items">
+                </tbody>
+            </table>
+            <p class="carrito-total">Subtotal: $<span id="subtotal-carrito">0.00</span></p>
+            <p class="carrito-descuentos-adicionales" id="descuentos-adicionales-carrito"></p>
+            <p class="carrito-total">Total General: $<span id="total">0.00</span></p>
+            <p class="carrito-ahorro-total">Ahorro Total: $<span id="ahorro-total">0.00</span></p>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button onclick="finalizarCompra()">Finalizar Compra <i class="fas fa-cash-register"></i></button>
+                <button class="close-button" onclick="cerrarCarritoModal()">Cerrar Carrito</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="product-detail-modal" id="productDetailModal">
+        <div class="product-detail-content">
+            <button class="close-button" style="align-self: flex-end;" onclick="closeProductDetailModal()"><i class="fas fa-times-circle"></i></button>
+            <img id="detail-product-image" src="" alt="Imagen del producto" style="max-width: 400px; height: auto; border-radius: 8px; margin-bottom: 20px;">
+            <h2 id="detail-product-name" style="color: #4e342e; margin-bottom: 10px;"></h2>
+            <p style="font-size: 1.1em; color: #555; text-align: center; max-width: 600px; margin-bottom: 20px;" id="detail-product-description"></p>
+            <p style="font-size: 1.2em; font-weight: bold; color: #333; margin-bottom: 20px;">Desde: $<span id="detail-product-price"></span></p>
+            <p style="font-size: 1em; color: #666;"><strong style="color: #4e342e;">Tipo de Café:</strong> <span id="detail-product-type"></span></p>
+            <p style="font-size: 1em; color: #666;"><strong style="color: #4e342e;">Notas de Sabor:</strong> <span id="detail-product-flavor-notes"></span></p>
+            <button id="buyFromDetailButton"><i class="fas fa-shopping-bag"></i> Comprar este café</button>
+        </div>
+    </div>
+
+    <div class="coffee-test-modal" id="coffeeTestModal">
+        <div class="coffee-test-content-modal">
+            <button class="close-button" style="align-self: flex-end;" onclick="closeCoffeeTestModal()"><i class="fas fa-times-circle"></i></button>
+            <h2>Descubre tu Café Ideal</h2>
+            <p style="margin-bottom: 25px; text-align: center;">Responde unas preguntas rápidas para encontrar la recomendación perfecta para ti.</p>
+
+            <div class="question-group">
+                <p><strong>1. ¿Qué intensidad de café prefieres?</strong></p>
+                <label><input type="radio" name="intensity" value="suave"> Suave (notas ligeras, acidez brillante)</label>
+                <label><input type="radio" name="intensity" value="media"> Media (balanceado, dulzura, cuerpo)</label>
+                <label><input type="radio" name="intensity" value="fuerte"> Fuerte (cuerpo completo, notas tostadas, baja acidez)</label>
+            </div>
+
+            <div class="question-group">
+                <p><strong>2. ¿Qué tipo de sabores te atraen más?</strong></p>
+                <label><input type="radio" name="flavor" value="frutal"> Frutales / Cítricos</label>
+                <label><input type="radio" name="flavor" value="chocolate"> Chocolate / Nueces / Caramelo</label>
+                <label><input type="radio" name="flavor" value="floral"> Florales / Herbáceos</label>
+                <label><input type="radio" name="flavor" value="terroso"> Terrosos / Especiados</label>
+            </div>
+
+            <div class="question-group">
+                <p><strong>3. ¿Para qué momento del día prefieres tu café?</strong></p>
+                <label><input type="radio" name="moment" value="manana"> Mañana (para empezar con energía)</label>
+                <label><input type="radio" name="moment" value="tarde"> Tarde (para disfrutar tranquilamente)</label>
+                <label><input type="radio" name="moment" value="despuescena"> Después de Cenar (suave, digestivo)</label>
+            </div>
+
+            <div class="question-group">
+                <p><strong>4. ¿Cuál es tu método de preparación preferido?</strong></p>
+                <label><input type="radio" name="method" value="espresso"> Espresso (cafetera, moka)</label>
+                <label><input type="radio" name="method" value="filtrado"> Filtrado (V60, Chemex, cafetera de goteo)</label>
+                <label><input type="radio" name="method" value="prensa"> Prensa Francesa</label>
+            </div>
+
+            <div class="question-group">
+                <p><strong>5. ¿Cómo sueles tomar tu café?</strong></p>
+                <label><input type="radio" name="consumption" value="solo"> Solo / Negro</label>
+                <label><input type="radio" name="consumption" value="leche"> Con leche</label>
+                <label><input type="radio" name="consumption" value="azucar"> Con azúcar / Endulzante</label>
+            </div>
+
+            <button onclick="submitCoffeeTest()">Obtener mi Recomendación <i class="fas fa-lightbulb"></i></button>
+            <div id="test-recommendation-result" style="margin-top: 20px; font-size: 1.1em; text-align: center;"></div>
+            <button class="close-button" style="margin-top: 20px;" onclick="closeCoffeeTestModal()">Cerrar</button>
+        </div>
+    </div>
+
+    <div class="modal auth-modal" id="authModal">
+        <div class="auth-content">
+            <button class="close-button" style="align-self: flex-end;" onclick="closeAuthModal()"><i class="fas fa-times-circle"></i></button>
+            <h2 id="authModalTitle"></h2>
+            <label for="username">Usuario:</label>
+            <input type="text" id="authUsername" placeholder="Ingresa tu usuario">
+            <label for="password">Contraseña:</label>
+            <input type="password" id="authPassword" placeholder="Ingresa tu contraseña">
+            <div id="adminCheckboxGroup" style="display: none; width: 100%;">
+                <label style="margin-top: 15px;">
+                    <input type="checkbox" id="registerAsAdmin"> Registrar como Administrador
+                </label>
+            </div>
+            <button id="authSubmitButton"></button>
+            <p id="authMessage" style="color: red; margin-top: 10px;"></p>
+        </div>
+    </div>
+
+    <div class="modal admin-modal" id="adminModal">
+        <div class="admin-content">
+            <button class="close-button" style="align-self: flex-end;" onclick="closeAdminModal()"><i class="fas fa-times-circle"></i></button>
+            <h2>Panel de Administración <i class="fas fa-chart-line"></i></h2>
+
+            <div class="admin-section">
+                <h3>Resumen General</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Usuarios</h3>
+                        <p id="totalUsersStat">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Productos</h3>
+                        <p id="totalProductsStat">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Ventas Estimadas</h3>
+                        <p id="estimatedSalesStat">$0.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-section" style="display: block;"> <h3>Gestión de Usuarios</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Usuario</th>
+                            <th>Rol</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userListAdmin">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="admin-section" style="display: block;">
+                <h3>Gestión de Productos</h3>
+                <button onclick="openAddProductModal()" style="margin-bottom: 15px;">Agregar Nuevo Producto</button>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Precio Base</th>
+                            <th>Stock</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productListAdmin">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="admin-section" id="adminDSS" style="display: block;">
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; width: 100%;">
+                <button class="close-button" onclick="closeAdminModal()">Cerrar Panel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal auth-modal" id="addProductModal">
+        <div class="auth-content">
+            <button class="close-button" style="align-self: flex-end;" onclick="closeAddProductModal()"><i class="fas fa-times-circle"></i></button>
+            <h2><span id="addProductModalTitle">Agregar</span> Producto</h2>
+            <label for="productName">Nombre:</label>
+            <input type="text" id="productName">
+            <label for="productPriceBase">Precio Base:</label>
+            <input type="number" id="productPriceBase" min="0.01" step="0.01">
+            <label for="productDescription">Descripción:</label>
+            <textarea id="productDescription" rows="3"></textarea>
+            <label for="productType">Tipo de Café:</label>
+            <input type="text" id="productType">
+            <label for="productImage">URL Imagen:</label>
+            <input type="text" id="productImage">
+            <label for="productFlavorNotes">Notas de Sabor (separadas por coma):</label>
+            <input type="text" id="productFlavorNotes">
+            <label for="productIntensity">Intensidad:</label>
+            <select id="productIntensity">
+                <option value="suave">Suave</option>
+                <option value="media">Media</option>
+                <option value="fuerte">Fuerte</option>
+            </select>
+            <label for="productStock">Stock:</label>
+            <input type="number" id="productStock" min="0" value="10">
+            <button id="saveProductButton" onclick="saveProduct()"></button>
+            <p id="addProductMessage" style="color: red; margin-top: 10px;"></p>
+        </div>
+    </div>
+
+
+    <div id="custom-notification"></div>
+
+    <footer>
+        <p>&copy; 2025 - Proyecto Final de Comercio Electrónico</p>
+    </footer>
+
+    <script src="ElRincon-del-Cafe.js"></script>
+
+</body>
+</html>
